@@ -1,11 +1,12 @@
-# syntax=docker/dockerfile:1
-FROM busybox:latest
-COPY --chmod=755 <<EOF /app/run.sh
-#!/bin/sh
-while true; do
-  echo -ne "The time is now $(date +%T)\\r"
-  sleep 1
-done
-EOF
+FROM mysql:5.6
 
-ENTRYPOINT /app/run.sh
+LABEL maintainer="delano@ufscar.br"
+
+ENV MYSQL_ROOT_PASSWORD secret
+ENV MYSQL_DATABASE loja_schema
+ENV MYSQL_USER loja
+ENV MYSQL_PASSWORD=lojasecret
+
+COPY schema.sql /docker-entrypoint-initdb.d
+
+EXPOSE 3306
